@@ -58,13 +58,18 @@
 
 ##### shell 简单介绍
 
-​	交互式（Interactive）：用户每输入一条命令就立即执行。
+1. ​	交互式（Interactive）：用户每输入一条命令就立即执行。
+2. ​	批处理（Batch）：由用户事先编写好一个完整的Shell脚本，Shell会一次性执行脚本中诸多的命令。
+3. 查看SHELL变量可以发现当前系统已经默认使用Bash作为命令行终端解释器了：
 
-​	批处理（Batch）：由用户事先编写好一个完整的Shell脚本，Shell会一次性执行脚本中诸多的命令。
+```shell
+[root@linuxprobe ~]# echo $SHELL/bin/bash
+```
 
 ##### 编写简单的脚本
 
-1、实现查看当前路径，并显示目录下的所有文件及属性信息。
+1. 实现查看当前路径，并显示目录下的所有文件及属性信息。
+
 
 ```shell
 [root@linuxprobe ~]# vim example.sh
@@ -74,5 +79,65 @@ pwd
 ls -al
 ```
 
+解析：
 
+1. 文件名随意，但是需要以.sh 结尾，分辨文件。
+2. "#!" 声明shell 解释器执行脚本
+3. "#" 是注释：对该脚本说明
+4. “剩下就是系统执行命令”
 
+注意：权限问题
+
+```shell
+[root@linuxprobe ~]# ./example.sh
+bash: ./Example.sh: Permission denied
+[root@linuxprobe ~]# chmod u+x example.sh
+[root@linuxprobe ~]# ./example.sh
+/root/Desktop
+total 8
+drwxr-xr-x. 2 root root 23 Jul 23 17:31 .
+dr-xr-x---. 14 root root 4096 Jul 23 17:31 ..
+-rwxr--r--. 1 root root 55 Jul 23 17:31 example.sh
+```
+
+#### 接收用户的参数
+
+1. Linux 系统中的shell ，已经内设用于接收参数变量，变量之间使用空格间隔。
+
+2. 接受参数介绍
+
+   1. "$#" 总共有几个参数
+
+   2. "$*" 对应所有的位置参数(变量参数)
+
+   3. ”$?“ 对应上一次的返回值（上一次命令返回的结果）
+
+   4. ”$0“ 对应当前执行脚本名称
+
+   5. ”$1,$2,$3“ $n 对应相应数字的位置参数
+
+      ![4.2 编写Shell脚本 - 图1](https://static.bookstack.cn/projects/linuxprobe/af08146e62405d151354861067f656cb.png)
+
+3.练习
+
+```shell
+[root@linuxprobe ~]# vim example.sh
+#!/bin/bash
+echo "当前脚本名称为$0"
+echo "总共有$#个参数，分别是$*。"
+echo "第1个参数为$1，第5个为$5。"
+[root@linuxprobe ~]# sh example.sh one two three four five six
+当前脚本名称为example.sh
+总共有6个参数，分别是one two three four five six。
+第1个参数为one，第5个为five。
+```
+
+#### 判断用户参数
+
+1. shell 条件测试语法是否成立，成立返回数字0，不成立返回其他随机数字。
+
+2. 注意：条件表达式两边均有一个空格!
+
+   ![测试语句格式](https://static.bookstack.cn/projects/linuxprobe/5d33b775522c2427345499a7015da65f.png)
+
+3. 
